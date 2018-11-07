@@ -61,6 +61,8 @@ function randomImage() {
     while (thirdRandom === secondRandom || thirdRandom === firstRandom) {
       thirdRandom = Math.floor(Math.random() * allProducts.length);
     }
+
+    
     //grab a random image from the array; access it at the index 'firstRandom' on the array:
     firstImg.src = allProducts[firstRandom].imgPath;
     secondImg.src = allProducts[secondRandom].imgPath;
