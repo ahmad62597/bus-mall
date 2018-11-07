@@ -1,181 +1,157 @@
 'use strict';
-//Collaborated with Andrew, Ryna, Ray, Alistair, Deziree, and Guru
-//use global variables:
-var totalClicks = 0;
-var allProducts = [];
-var previousImgShown = [];
 
+//use global variables:
+var ctx = document.getElementById("myChart").getContext('2d');
+var totalClicks = 0; //this var tracks how many times someone clicks the images
 var firstImg = document.getElementById('first');
 var secondImg = document.getElementById('second');
 var thirdImg = document.getElementById('third');
+var results = document.getElementById('results'); //declare the variable results to find results in html
+var lastShownImages = [];//keeps track of images displayed
 
-var results = document.getElementById('results');
-
-
-function Product(name, imgPath, altTxt){
+//set the foundation to enable a constructor to setup an object for every image downloaded
+var allProducts = [];
+//and to keep track of the times the image is displayed, and then instantiate the new objects with name variable and an imgPath->
+//Constructor function for 'Product' objects:
+function Product(name, imgPath) {
+  //(image a property on the constructor function(Product))
   this.name = name;
   this.imgPath = imgPath;
-  this.altTxt = altTxt;
-  this.views = 0;
-  this.votes = 0;
-  allProducts.push(this);
+  this.views = 0; //the other properties havent been seen. set them to 0
+  this.votes = 0; //everytime you click on an object increase this value
+
+  var cOne = Math.floor(Math.random() * 255);
+  var cTwo = Math.floor(Math.random() * 255);
+  var cThree = Math.floor(Math.random() * 255);
+
+  this.bgColor = `rgba(${cOne}, ${cTwo}, ${cThree}, 0.2)`;
+  allProducts.push(this); //push this whenever the object is instantiated (into the allProducts arrary)
 }
-
-new Product('bag', './img/bag.jpg' , 'bag');
-new Product('banana', './img/banana.jpg' , 'banana');
-new Product('bathroom', './img/bathroom.jpg' , 'bathroom');
-new Product('boots', './img/boots.jpg' , 'boots');
-new Product('breakfast', './img/breakfast.jpg' , 'breakfast');
-new Product('bubblegum', './img/bubblegum.jpg' , 'bubblegum');
-new Product('chair', './img/chair.jpg' , 'chair');
-new Product('cthulhu', './img/cthulhu.jpg' , 'cthulhu');
-new Product('dog-duck', './img/dog-duck.jpg' , 'dog-duck');
-new Product('dragon' , './img/dragon.jpg' , 'dragon');
-new Product('pen' , './img/pen.jpg' , 'pen');
-new Product('pet-sweep' , './img/pet-sweep.jpg' , 'pet-sweep');
-new Product('scissors' , './img/scissors.jpg' , 'scissors');
-new Product('shark' , './img/shark.jpg' , 'shark');
-
-
+//we need a "blueprint" for creating many objects of the same "type".
+//new Product instantiates (to represent or be an example of something) a new object
+//The way to create an "object type", is to use an object constructor function:
+new Product('bag', './images/bag.jpg');
+new Product('banana', './images/banana.jpg');
+new Product('bathroom', './images/bathroom.jpg');
+new Product('boots', './images/boots.jpg');
+new Product('breakfast', './images/breakfast.jpg');
+new Product('bubblegum', './images/bubblegum.jpg');
+new Product('chair', './images/chair.jpg');
+new Product('cthulhu', './images/cthulhu.jpg');
+new Product('dog-duck', './images/dog-duck.jpg');
+new Product('dragon', './images/dragon.jpg');
+new Product('pen', './images/pen.jpg');
+new Product('pet-sweep', './images/pet-sweep.jpg');
+new Product('scissors', './images/scissors.jpg');
+new Product('shark', './images/shark.jpg');
+new Product('sweep', './images/sweep.png');
+new Product('tauntaun', './images/tauntaun.jpg');
+new Product('unicorn', './images/unicorn.jpg');
+new Product('usb', './images/usb.gif');
+new Product('water-can', './images/water-can.jpg');
+new Product('wine-glass', './images/wine-glass.jpg');
+console.log(allProducts);
+//create a random image function:
 function randomImage() {
   var firstRandom = Math.floor(Math.random() * allProducts.length);
   var secondRandom = Math.floor(Math.random() * allProducts.length);
   var thirdRandom = Math.floor(Math.random() * allProducts.length);
 
-  while( firstRandom === secondRandom
-     || firstRandom === thirdRandom 
-     || secondRandom === thirdRandom 
-     || previousImgShown.includes(firstRandom)
-     || previousImgShown.includes(secondRandom)
-     || previousImgShown.includes(thirdRandom))
-     {  
+  //generate a new image if there is duplication and use an array method to iterate through the last shown images.
+  //if any of the conditions in the while loop are true then reassign the values until there isn't a duplicate.
+  //name the array (allProducts); attach the methods (with a while loop); then invoke it against the value you want to check inside the array:
+  while (firstRandom === secondRandom || firstRandom === thirdRandom || secondRandom === thirdRandom || lastShownImages.includes(firstRandom) || lastShownImages.includes(secondRandom) || lastShownImages.includes(thirdRandom)) {
     firstRandom = Math.floor(Math.random() * allProducts.length);
     secondRandom = Math.floor(Math.random() * allProducts.length);
     thirdRandom = Math.floor(Math.random() * allProducts.length);
-    
   }
-    previousImgShown[0] = firstRandom;
-    previousImgShown[1] = secondRandom;
-    previousImgShown[2] = thirdRandom;
+  //once the while loop stops running update the array after identifying that the image is unique/unduplicated:
+  lastShownImages[0] = firstRandom;
+  lastShownImages[1] = secondRandom;
+  lastShownImages[2] = thirdRandom;
 
-    firstImg.src = allProducts[firstRandom].imgPath;
-    secondImg.src = allProducts[secondRandom].imgPath;
-    thirdImg.src = allProducts[thirdRandom].imgPath;
+  console.log(lastShownImages);
 
-    firstImg.alt = allProducts[firstRandom].altTxt;
-    secondImg.alt = allProducts[secondRandom].altTxt;
-    thirdImg.alt = allProducts[thirdRandom].altTxt;
+  firstImg.src = allProducts[firstRandom].imgPath;
+  secondImg.src = allProducts[secondRandom].imgPath;
+  thirdImg.src = allProducts[thirdRandom].imgPath;
 
-    allProducts[firstRandom].views++;
-    allProducts[secondRandom].views++;
-    allProducts[secondRandom].views++;
+  //increment the clicker counter
+  firstImg.alt = allProducts[firstRandom].name;
+  secondImg.alt = allProducts[secondRandom].name;
+  thirdImg.alt = allProducts[thirdRandom].name;
+  console.log(firstImg);
 
-    totalClicks++;
+  //update the view count after the user is shown a photo and increment it by 1
+  allProducts[firstRandom].views++;
+  allProducts[secondRandom].views++;
+  allProducts[thirdRandom].views++;
 
-  if (totalClicks === 25){
-    firstImg.removeEventListener('click' , handleImageClick);
-    secondImg.removeEventListener('click' , handleImageClick);
-    thirdImg.removeEventListener('click' , handleImageClick);
-    displayResults();
+  //everytime a random image is called 'totaClicks' increments
+  totalClicks++;
+  console.log(totalClicks);
+  //add an if statement to stop running at 25 clicks (stop the event listener from functioning).
+  if (totalClicks === 25) {
+    firstImg.removeEventListener('click', handleImageClick);
+    secondImg.removeEventListener('click', handleImageClick);
+    thirdImg.removeEventListener('click', handleImageClick);
+    displayResults(); //call the function displayResults below
   }
 }
-
-function handleImageClick(event){
-  randomImage();
-
+//pass an event to the function so that you can access the properties of the event.
+function handleImageClick(event) {
+  console.log(event.target.alt);
+  //iterate through array to check that event has been clicked
   for (var i = 0; i < allProducts.length; i++) {
     if (event.target.alt === allProducts[i].name) {
       allProducts[i].votes++;
     }
   }
+  //in order to get a random image which allows new photos to be displayed call randomImage Function
+  randomImage();
 }
-
-function displayResults(){
-  for (var i = 0; i < allProducts.length; i++){
-    var liEl = document.createElement('li');
-    liEl.textContent = allProducts[i].votes + ' votes for the ' + allProducts[i].name + ' and ' + allProducts[i].views + ' views .';
-    results.appendChild(liEl);
-  }
-}
-
 randomImage();
+//generate a string for every object
+function displayResults() {
+  var names = [];
+  for (var i = 0; i < allProducts.length; i++) {
+    names.push(allProducts[i].name);
+  }
 
+  var votes = [];
+  for (var j = 0; j < allProducts.length; j++) {
+    votes.push(allProducts[j].votes);
+  }
+
+  var colors = [];
+  for (var k = 0; k < allProducts.length; k++) {
+    colors.push(allProducts[k].bgColor);
+  }
+
+  var chartConfig = {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{
+        label: '# of Votes',
+        data: votes,
+        backgroundColor: colors,
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  };
+
+  return new Chart(ctx, chartConfig);
+}
+//add event listeners to receive the value of the callback function
 firstImg.addEventListener('click', handleImageClick);
 secondImg.addEventListener('click', handleImageClick);
 thirdImg.addEventListener('click', handleImageClick);
-
-// Array for collecting all of the colors
-var colors = ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"];
-
-// HTMLElement 'hook' to the document
-var colorsEl = document.getElementById('colors-container');
-
-// Loop for the length of colors
-// Create a p tag, give it content, and append it to the DOM
-for (var i = 0; i < colors.length; i++) {
-  var pEl = document.createElement('p');
-  pEl.textContent = colors[i];
-
-  pEl.style.color = colors[i];
-  pEl.id = colors[i];
-
-  colorsEl.appendChild(pEl);
-}
-
-
-var ctx = document.getElementById("myChart").getContext('2d');
-
-var chartConfig = {
-  type: 'bar',
-  data: {
-    labels: colors,
-    datasets: [{
-      label: '# of Votes',
-      data: new Array(colors.length).fill(0),
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        }
-      }]
-    }
-  }
-};
-
-
-var myChart = new Chart(ctx, chartConfig);
-
-colorsEl.addEventListener('click', function(event) {
-  // validate the target as a p tag
-  // get the id of the target p tag
-  // use the id to get the index location for what data point to increment in data
-
-  var pId = event.target.id;
-  var idx = colors.indexOf(pId);
-
-  if (idx !== -1) {
-    myChart.data.datasets[0].data[idx] += 1;
-    console.log(myChart.data.datasets[0].data);
-    myChart.update();
-  }
-})
