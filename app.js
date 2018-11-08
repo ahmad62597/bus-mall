@@ -111,6 +111,15 @@ function handleImageClick(event) {
   randomImage();
 }
 randomImage();
+
+
+//creating getter to add data ontop of itself instead of resetting
+// if (localStorage.getItem('voteData')){
+//   var allData = localStorage.getItem('voteData');
+//   myChart.data.datasets[0].data = JSON.parse('allData')
+
+
+
 //generate a string for every object
 function displayResults() {
   var names = [];
@@ -149,9 +158,33 @@ function displayResults() {
     }
   };
 
-  return new Chart(ctx, chartConfig);
+  var jsonData = JSON.stringify(votes);
+  localStorage.setItem('voteData', jsonData);
+
+
+  var myChart =  new Chart(ctx, chartConfig);
+
+
+
+  if (localStorage.getItem('voteData')){
+    var allData = localStorage.getItem('voteData');
+    myChart.data.datasets[0].data = JSON.parse(allData);
+  
+  }
+
+
 }
+
+
+
 //add event listeners to receive the value of the callback function
 firstImg.addEventListener('click', handleImageClick);
 secondImg.addEventListener('click', handleImageClick);
 thirdImg.addEventListener('click', handleImageClick);
+
+
+document.getElementById('clear-localstorage').addEventListener('click', function(){
+  localStorage.clear();
+  window.location.reload();
+});
+
